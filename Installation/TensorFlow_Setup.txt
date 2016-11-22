@@ -1,0 +1,37 @@
+Requirements
+
+The TensorFlow Python API supports Python 2.7 and Python 3.3+.
+
+The GPU version works best with Cuda Toolkit 8.0 and cuDNN v5. Other versions are supported (Cuda toolkit >= 7.0 and cuDNN >= v3) only when installing from sources. Please see Cuda installation for details. For Mac OS X, please see Setup GPU for Mac.
+
+Overview
+
+We support different ways to install TensorFlow:
+
+Pip install: Install TensorFlow on your machine, possibly upgrading previously installed Python packages. May impact existing Python programs on your machine.
+Virtualenv install: Install TensorFlow in its own directory, not impacting any existing Python programs on your machine.
+Anaconda install: Install TensorFlow in its own environment for those running the Anaconda Python distribution. Does not impact existing Python programs on your machine.
+Docker install: Run TensorFlow in a Docker container isolated from all other programs on your machine.
+Installing from sources: Install TensorFlow by building a pip wheel that you then install using pip.
+If you are familiar with Pip, Virtualenv, Anaconda, or Docker, please feel free to adapt the instructions to your particular needs. The names of the pip and Docker images are listed in the corresponding installation sections.
+
+If you encounter installation errors, see common problems for some solutions.
+
+Pip Installation
+
+Pip is a package management system used to install and manage software packages written in Python.
+
+The packages that will be installed or upgraded during the pip install are listed in the REQUIRED_PACKAGES section of setup.py.
+
+Install pip (or pip3 for python3) if it is not already installed:
+
+# Ubuntu/Linux 64-bit
+$ sudo apt-get install python-pip python-dev
+
+# Mac OS X
+$ sudo easy_install pip
+$ sudo easy_install --upgrade six
+
+If having the issues:  AttributeError: type object 'NewBase' has no attribute 'is_abstract'
+Do:
+sudo pip install six --upgrade --target="/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/"

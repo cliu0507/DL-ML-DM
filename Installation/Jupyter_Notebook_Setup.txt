@@ -1,0 +1,9 @@
+pip3 install --upgrade pip
+pip3 install jupyter
+
+Running the Notebook:
+Start the notebook server from the command line:
+jupyter notebook
+
+Start notebook server without opening a web browser:
+jupyter notebook --no-browser
