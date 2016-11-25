@@ -35,3 +35,7 @@ $ sudo easy_install --upgrade six
 If having the issues:  AttributeError: type object 'NewBase' has no attribute 'is_abstract'
 Do:
 sudo pip install six --upgrade --target="/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/"
+
+
+
+http://stackoverflow.com/questions/6012246/why-is-python-easy-install-not-working-on-my-mac
