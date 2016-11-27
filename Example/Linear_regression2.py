@@ -43,7 +43,7 @@ with tf.Session() as sess:
     # Fit all training data
     for epoch in range(training_epochs):
         for (x, y) in zip(train_X, train_Y):
-            _,cost_val = sess.run([optimizer,cost], feed_dict={X: x, Y: y})
+            _,cost_val,X_val,Y_val,pred_val,W_val = sess.run([optimizer,cost,X,Y,pred,W], feed_dict={X: x, Y: y})
 
         # Display logs per epoch step
         if (epoch+1) % display_step == 0:
@@ -66,8 +66,8 @@ with tf.Session() as sess:
     test_Y = numpy.asarray([1.84, 2.273, 3.2, 2.831, 2.92, 3.24, 1.35, 1.03])
 
     print("Testing... (Mean square loss Comparison)")
-    testing_cost = sess.run(
-        tf.reduce_sum(tf.pow(pred - Y, 2)) / (2 * test_X.shape[0]),
+    testing_cost,X_val,Y_val,pred_val = sess.run(
+        [tf.reduce_sum(tf.pow(pred - Y, 2)) / (2 * test_X.shape[0]), X , Y , pred],
         feed_dict={X: test_X, Y: test_Y})  # same function as cost above
     print("Testing cost=", testing_cost)
     print("Absolute mean square loss difference:", abs(
