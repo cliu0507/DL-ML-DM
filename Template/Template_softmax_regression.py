@@ -64,8 +64,8 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 
 # Parameters
 learning_rate = 0.5
-training_epochs = 1000
-display_epochs = 10
+training_epochs = 100000
+display_epochs = 1000
 
 #tensor for feature vector x, shape is [None,feature_num]
 x = tf.placeholder(tf.float32, [None, num_feature])

@@ -64,8 +64,8 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 
 # Parameters
 learning_rate = 0.03
-training_epochs = 10000
-display_step = 100
+training_epochs = 50000
+display_step = 1000
 
 # Network Parameters
 n_hidden_1 = 10 # 1st layer number of features
