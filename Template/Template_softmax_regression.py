@@ -1,5 +1,5 @@
 #Use Tensorflow to solve machine learning problem
-#Include Softmax Regression, Multilayer Preceptron
+#Softmax Regression
 
 #Import tensorflow library
 import tensorflow as tf
@@ -62,6 +62,11 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 #---------------------------------------------
 #Build Model Module:
 
+# Parameters
+learning_rate = 0.5
+training_epochs = 1000
+display_epochs = 10
+
 #tensor for feature vector x, shape is [None,feature_num]
 x = tf.placeholder(tf.float32, [None, num_feature])
 
@@ -84,6 +89,7 @@ y = tf.placeholder(tf.float32, [None, num_class])
 # outputs of 'xW', and then average across the batch.
 
 '''
+Below is the details of softmax regression implementation
 Softmax regression: http://ufldl.stanford.edu/wiki/index.php/Softmax_Regression
 
 We could use Raw formulation instead of calling tf.nn.softmax_cross_entropy_with_logits(xW, y):
@@ -144,7 +150,7 @@ cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(xW, y)) =
 cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(xW, y))
 
 #Set GradientDescentOptimizer with learning rate 0.5, to minimize cross_entropy
-optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cross_entropy)
 #---------------------------------------------
 
 
@@ -159,10 +165,6 @@ init = tf.initialize_all_variables()
 
 sess.run(init)
 
-#How many iterations
-training_epochs = 1000
-display_epochs = 10
-
 for epoch in range(training_epochs):
   #Training:
   _,cost,weights,bias = sess.run([optimizer,cross_entropy,W,b], feed_dict={x:x_training , y:y_training})
@@ -174,7 +176,7 @@ for epoch in range(training_epochs):
     #print("Epoch:", '%04d' % (epoch+1), "cost=", cost, "W=", weights, "b=",bias)
     print("Epoch:", '%04d' % (epoch + 1), "cost=", cost)
 
-print("Optimization Finished!")
+print("Softmax Regression Optimization Finished!")
 final_cost = sess.run(cross_entropy, feed_dict= {x:x_training , y:y_training})
 print("Final Training Cost:" "{:.9f}".format(final_cost) , " Weights:", sess.run(W), " Bias:", sess.run(b))
 #---------------------------------------------
@@ -199,7 +201,7 @@ print("Test Set Prediction Accuracy(Version 1): %f" % accuracy)
 
 #---------------------------------------------
 #Test/Validation Module (Version Two):
-correct_prediction = tf.equal(tf.argmax(xW_val, 1), tf.argmax(y, 1))
+correct_prediction = tf.equal(tf.argmax(xW, 1), tf.argmax(y, 1))
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 accuracy_val = sess.run(accuracy, feed_dict={x: x_test, y: y_test})
 print("Test Set Prediction Accuracy(Version 2): %f" % accuracy_val)
