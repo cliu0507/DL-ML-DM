@@ -27,6 +27,11 @@ X, Y = make_classification(n_samples=1000, n_features=10, n_classes=3,n_clusters
 x_training = X[:500][:]
 x_test = X[500:][:]
 
+
+#Note Y's shape is [1000,], which is a list storing label ids
+#for example Y = [0,2,1,2,2,1,0,0], means that 8 samples, and 1st sample assigned to No.0 cluster
+#2rd sample assigned to No.2 cluster.
+#However, we need to convert Y to Y_sparse representation like [[1,0,0],[0,0,1],[0,1,0],[0,0,2]...]
 Y_Sparse = np.zeros((X.shape[0],5))
 for i in range(Y_Sparse.shape[0]):
     Y_Sparse[i][Y[i]] = 1
