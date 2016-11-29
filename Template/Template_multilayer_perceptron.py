@@ -23,6 +23,8 @@ y_test = []
 ##############################################
 #Generate a random n-class classification problem by Sklearn
 X, Y = make_classification(n_samples=1000, n_features=10, n_classes=3,n_clusters_per_class =1,n_informative = 5)
+#X, Y = make_classification(n_samples=1000, n_features=10, n_classes=2,n_clusters_per_class =1)
+
 
 x_training = X[:500][:]
 x_test = X[500:][:]
@@ -64,7 +66,7 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 
 # Parameters
 learning_rate = 0.03
-training_epochs = 50000
+training_epochs = 40000
 display_step = 1000
 
 # Network Parameters

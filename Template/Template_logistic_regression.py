@@ -62,7 +62,7 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 
 # Parameters
 learning_rate = 0.5
-training_epochs = 100000
+training_epochs = 30000
 display_epochs = 1000
 
 #tensor for feature vector x , shape is [None,feature_num] -- matrix
@@ -72,11 +72,11 @@ x = tf.placeholder(tf.float32, [None,num_feature])
 W = tf.Variable(tf.zeros([num_feature],dtype=tf.float32))
 
 #tensor for bias weight, shape is [1] -- float
-b = tf.Variable([])
+b = tf.Variable(tf.zeros([],tf.float32))
 
 #prediction tensor y, shape is [None,1] --- broadcasting feature of numpy
-xW = tf.reduce_sum(tf.mul(x,W),1) + b
-xW_test = tf.mul(x,W)
+xW = tf.add(tf.reduce_sum(tf.mul(x,W),1), b)
+#xW_test = tf.mul(x,W)
 
 #tensor of ground truth label vectors
 y = tf.placeholder(tf.float32,[None])
