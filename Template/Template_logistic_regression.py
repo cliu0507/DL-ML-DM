@@ -5,6 +5,7 @@
 import tensorflow as tf
 import numpy as np
 import math
+import random
 from sklearn.datasets import make_classification
 import matplotlib.pyplot as plt
 
@@ -111,24 +112,31 @@ while epoch <= training_epochs:
     _,cost_val,weights,bias = sess.run([optimizer,cost,W, b], feed_dict={x:x_training, y:y_training})
     if math.isnan(cost_val):
         print("Weight overflow, reinitialize weights")
-        sess.close()
-        x = tf.placeholder(tf.float32, [None, num_feature])
-
-        W = tf.Variable(tf.random_normal([num_feature], dtype=tf.float32))
-        b = tf.Variable(tf.random_normal([], dtype=tf.float32))
-        h = 1 / (tf.exp(-xW) + 1)
-        xW = tf.add(tf.reduce_sum(tf.mul(x, W), 1), b)
-        y = tf.placeholder(tf.float32, [None])
-
-        cost = -tf.reduce_mean(y * tf.log(h) + (1 - y) * tf.log(1 - h))
-        optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
-
+        #Reset Graph
+        tf.reset_default_graph()
         sess = tf.InteractiveSession()
-        init = tf.initialize_all_variables()
-
-        sess.run(init)
         epoch = 0
-        continue
+        # tensor for feature vector x , shape is [None,feature_num] -- matrix
+        x = tf.placeholder(tf.float32, [None, num_feature])
+        # tensor for logistic regression weights, shape is [feature_num] --vector
+        W = tf.Variable(tf.random_normal([num_feature], dtype=tf.float32))
+        # tensor for bias weight, shape is [1] -- float
+        b = tf.Variable(tf.random_normal([], dtype=tf.float32))
+        # prediction tensor y, shape is [None,1] --- broadcasting feature of numpy
+        xW = tf.add(tf.reduce_sum(tf.mul(x, W), 1), b)
+        # xW_test = tf.mul(x,W)
+        # tensor of ground truth label vectors
+        y = tf.placeholder(tf.float32, [None])
+        # hypothesis tensor -- h is [None,1]
+        h = 1 / (tf.exp(-xW) + 1)
+        # cost function (cross entropy)
+        cost = -tf.reduce_mean(y * tf.log(h) + (1 - y) * tf.log(1 - h))
+        # Set GradientDescentOptimizer with learning rate 0.5, to minimize cost
+        #Ajust learning rate
+        learning_rate = learning_rate*(random.random()-0.5)*2*0.8
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
+        init = tf.initialize_all_variables()
+        sess.run(init)
     #Print epoch training status on console
     if epoch % display_epochs == 0:
         print("Epoch:", '%04d' % (epoch+1), "cost=", cost_val)
