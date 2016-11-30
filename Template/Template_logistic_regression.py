@@ -4,6 +4,7 @@
 #Import tensorflow library
 import tensorflow as tf
 import numpy as np
+import math
 from sklearn.datasets import make_classification
 import matplotlib.pyplot as plt
 
@@ -62,17 +63,17 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 
 # Parameters
 learning_rate = 0.5
-training_epochs = 30000
+training_epochs = 5000
 display_epochs = 1000
 
 #tensor for feature vector x , shape is [None,feature_num] -- matrix
 x = tf.placeholder(tf.float32, [None,num_feature])
 
 #tensor for logistic regression weights, shape is [feature_num] --vector
-W = tf.Variable(tf.zeros([num_feature],dtype=tf.float32))
+W = tf.Variable(tf.random_normal([num_feature],dtype=tf.float32))
 
 #tensor for bias weight, shape is [1] -- float
-b = tf.Variable(tf.zeros([],tf.float32))
+b = tf.Variable(tf.random_normal([],dtype=tf.float32))
 
 #prediction tensor y, shape is [None,1] --- broadcasting feature of numpy
 xW = tf.add(tf.reduce_sum(tf.mul(x,W),1), b)
@@ -104,14 +105,34 @@ init = tf.initialize_all_variables()
 
 sess.run(init)
 
-for epoch in range(training_epochs):
-
+epoch = 0
+while epoch <= training_epochs:
     #Training Process
     _,cost_val,weights,bias = sess.run([optimizer,cost,W, b], feed_dict={x:x_training, y:y_training})
+    if math.isnan(cost_val):
+        print("Weight overflow, reinitialize weights")
+        sess.close()
+        x = tf.placeholder(tf.float32, [None, num_feature])
 
+        W = tf.Variable(tf.random_normal([num_feature], dtype=tf.float32))
+        b = tf.Variable(tf.random_normal([], dtype=tf.float32))
+        h = 1 / (tf.exp(-xW) + 1)
+        xW = tf.add(tf.reduce_sum(tf.mul(x, W), 1), b)
+        y = tf.placeholder(tf.float32, [None])
+
+        cost = -tf.reduce_mean(y * tf.log(h) + (1 - y) * tf.log(1 - h))
+        optimizer = tf.train.GradientDescentOptimizer(learning_rate=learning_rate).minimize(cost)
+
+        sess = tf.InteractiveSession()
+        init = tf.initialize_all_variables()
+
+        sess.run(init)
+        epoch = 0
+        continue
     #Print epoch training status on console
     if epoch % display_epochs == 0:
         print("Epoch:", '%04d' % (epoch+1), "cost=", cost_val)
+    epoch = epoch+1
 
 print('Logistic Regression Optimization Finished!')
 final_cost = sess.run(cost, feed_dict = {x:x_training,y:y_training})
@@ -124,15 +145,15 @@ print("Final Training Cost:" "{:.9f}".format(final_cost) , " Weights:", sess.run
 print("Testing Test Data Set:")
 weights = sess.run(W)
 bias = sess.run(b)
-h = sess.run(h,feed_dict={x:x_test})
+pred = sess.run(h,feed_dict={x:x_test})
 
-for index in range(h.size):
-    if h[index] >= 0.5:
-        h[index] = 1
+for index in range(pred.size):
+    if pred[index] >= 0.5:
+        pred[index] = 1
     else:
-        h[index] = 0
+        pred[index] = 0
 
-correction_prediction = np.equal(h,y_test)
+correction_prediction = np.equal(pred,y_test)
 accuracy = 0
 for i in range(correction_prediction.size):
   if correction_prediction[i]:
@@ -140,4 +161,21 @@ for i in range(correction_prediction.size):
 print("Test Set Prediction Accuracy(Version 1): %f" % accuracy)
 
 #correction_prediction numpy list example: [True, False, False, True] --- size is the number of test samples
+#---------------------------------------------
+
+
+#---------------------------------------------
+#Test/Validation Module (Version Two):
+accuracy = 0
+
+#pred has shape of [num_test_samples,] --> each entry is probabiltiy
+pred = h.eval(feed_dict={x:x_test})
+for index,i in enumerate(pred):
+    if i >= 0.5 and y_test[index] == 1:
+        accuracy = accuracy + 1
+    if i < 0.5 and y_test[index] == 0:
+        accuracy = accuracy + 1
+
+print("Test Set Prediction Accuracy(Version 2): %f" % (float(accuracy)/pred.shape[0]))
+
 #---------------------------------------------
