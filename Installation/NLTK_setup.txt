@@ -1,0 +1,6 @@
+sudo pip install -U nltk
+
+Test installation: run python then type import nltk
+
+import nltk
+nltk.download()
