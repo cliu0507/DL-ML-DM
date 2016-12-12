@@ -64,6 +64,42 @@ Data Sample: feature vector: [2,5,6,7,7,6,7,8,3,-1], label vector: [1,0,0]
 #---------------------------------------------
 #Build Model Module:
 
+'''
+hidden layer 1: 10
+hidden layer 2: 20
+n_input : number of feature of input (lets say it has 1000 dimensions)
+n_class : number of classes(multi-class classification)
+
+layer_1_output = relu(X * h1 + b1)
+layer_2_output = relu(layer_1_output * h2 + b2)
+pred = outlayer_output = layer_2_output * out_weight + out_bias   (Note Here we set Output layer with LINEAR activation)
+
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))
+    Note: Usage of tf.nn.softmax_cross_entropy_with_logits
+        pred are unnormalized log probabilities, so they are logits.
+        pred_softmax = tf.nn.softmax(pred) ==> normormalization to softmax probability
+        loss = tf.reduce_mean(-tf.reduce_sum(y * tf.log(pred_softmax), [1]))
+        Above two formulas are equal to "cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(pred, y))"
+
+
+X                   -> [BATCH_SIZE,n_input] -> [BATCH_SIZE,1000]
+h1                  -> [n_input, 10]
+b1                  -> [10, ]
+layer_1_output      -> [BATCH_SIZE,10]
+h2                  -> [10,20]
+b2                  -> [20, ]
+layer_2_output      -> [BATCH_SIZE,20]
+out_weight          -> [20,n_class]
+out_bias            -> [20,]
+outlayer_output/pred-> [BATCH_SIZE,n_class]
+
+Y                   -> [BATCH_SIZE,n_class]
+cost = log(pred) * Y
+'''
+
+
+
+
 # Parameters
 learning_rate = 0.03
 training_epochs = 40000
