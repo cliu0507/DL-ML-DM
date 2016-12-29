@@ -4,3 +4,7 @@ Test installation: run python then type import nltk
 
 import nltk
 nltk.download()
+
+Install nltk on both python2 and python3
+pip2 install nltk
+pip3 install nltk

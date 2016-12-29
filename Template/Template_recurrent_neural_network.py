@@ -5,9 +5,9 @@
 
 import tensorflow as tf
 import numpy as np
-import nltk
 import csv
 import itertools
+import nltk
 
 #source_data_file = "../Data/reddit-comments.csv"
 source_data_file = "../Data/short.csv"
