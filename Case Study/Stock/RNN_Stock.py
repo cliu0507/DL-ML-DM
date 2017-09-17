@@ -11,15 +11,11 @@ Assume we have
 
 Input
 
-
 Feature Matrix:
 np.array [4000,400]
 
 Label Matrix:
 np.array [4000,2]
-
-
-
 
 
 Step = 5 
