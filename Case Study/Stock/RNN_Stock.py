@@ -53,22 +53,19 @@ def gen_Data(BATCH_SIZE,num_features,num_classes,record_count=50000):
 	if consecutive two days feature[1] = 0  => label of next day will be [0,1]
 	or 
 	if consecutive two days feature[2] = 1 => label of next day will be [0,1]
- 	'''
+	'''
 	for i, row in enumerate(label_matrix):
 		if i < 2:
 			label_matrix[i,0] = 1
 		else:
 			
-			if feature_matrix[i-1,0] == 1 and feature_matrix[i-2,0] == 1 \ 
-			or feature_matrix[i-1,1] == 0 and feature_matrix[i-2,1] == 0 \
-			or (i>=3 and feature_matrix[i-3,2] == 1 and feature_matrix[i-2,2] == 1 and feature_matrix[i-1,2] == 1):
+			if feature_matrix[i-1,0] == 1 and feature_matrix[i-2,0] == 1:
 				#Satisify pattern
 				label_matrix[i,1] = 1
-			
-			'''
-			if feature_matrix[i-1,0] == 1 and feature_matrix[i-2,0] == 1:
+			elif feature_matrix[i-1,1] == 0 and feature_matrix[i-2,1] == 0:
 				label_matrix[i,1] = 1
-			'''
+			elif (i>=3 and feature_matrix[i-3,2] == 1 and feature_matrix[i-2,2] == 1 and feature_matrix[i-1,2] == 1):
+				label_matrix[i,1] = 1
 			else:
 				#Otherwise assign it as 0
 				label_matrix[i,0] = 1
@@ -105,10 +102,16 @@ init_state = tf.placeholder(tf.float32, [None, state_size])
 """
 RNN
 """
-rnn_inputs = tf.unpack(x, axis=1)
+#Work in Tensorflow <= 0.12
+#rnn_inputs = tf.unpack(x, axis=1)
+
+rnn_inputs = tf.unstack(x, axis=1)
+
 
 cell = tf.nn.rnn_cell.BasicRNNCell(state_size)
-rnn_outputs, final_state = tf.nn.rnn(cell, rnn_inputs, initial_state=init_state)
+#Work in Tensorflow <= 0.12
+#rnn_outputs, final_state = tf.nn.rnn(cell, rnn_inputs, initial_state=init_state)
+rnn_outputs, final_state = tf.nn.static_rnn(cell, rnn_inputs, initial_state=init_state)
 
 """
 Predictions, loss, training step
