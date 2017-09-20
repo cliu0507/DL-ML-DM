@@ -31,9 +31,9 @@ y:8 * [100, 2]
 num_steps = 5 # number of truncated backprop steps ('n' in the discussion above)
 BATCH_SIZE = 100
 num_features = 3
-num_classes = 2
-state_size = 4
-learning_rate = 0.1
+num_classes = 3
+state_size = 5
+learning_rate = 0.05
 regularization = 0.0001
 
 
@@ -48,11 +48,12 @@ def gen_Data(BATCH_SIZE,num_features,num_classes,record_count=50000):
 	'''
 	example:
 	only 
-	if consecutive two days feature[0] = 1  => label of next day will be [0,1] 
+	if consecutive two days feature[0] = 1  => label of next day will be 1
 	or 
-	if consecutive two days feature[1] = 0  => label of next day will be [0,1]
+	if consecutive two days feature[1] = 0  => label of next day will be 1
 	or 
-	if consecutive two days feature[2] = 1 => label of next day will be [0,1]
+	if above doesn't satisfy
+	if consecutive three days feature[2] = 1 => label of next day will be 2
 	'''
 	for i, row in enumerate(label_matrix):
 		if i < 2:
@@ -65,7 +66,7 @@ def gen_Data(BATCH_SIZE,num_features,num_classes,record_count=50000):
 			elif feature_matrix[i-1,1] == 0 and feature_matrix[i-2,1] == 0:
 				label_matrix[i,1] = 1
 			elif (i>=3 and feature_matrix[i-3,2] == 1 and feature_matrix[i-2,2] == 1 and feature_matrix[i-1,2] == 1):
-				label_matrix[i,1] = 1
+				label_matrix[i,2] = 1
 			else:
 				#Otherwise assign it as 0
 				label_matrix[i,0] = 1
@@ -155,7 +156,7 @@ print label_matrix.shape
 with tf.Session() as sess:
 	sess.run(tf.initialize_all_variables())
 	training_losses = []
-	for epoch in range(0,10):
+	for epoch in range(0,20):
 		for offset in range(0,num_steps):
 			#X_list : [num_batch, BATCH_SIZE, num_steps, num_feature]
 			#Y_list : [num_batch, BATCH_SIZE, num_classes] (Note, only keep the y value of last step)
@@ -175,8 +176,8 @@ with tf.Session() as sess:
 			print "Finish One Pass of Data"
 		print "Epoch Finished...Start Another Epoch"
 	print "Training Finished"
-	#plt.plot(training_losses)
-	#plt.show()
+	plt.plot(training_losses)
+	plt.show()
 	
 
 	'''
