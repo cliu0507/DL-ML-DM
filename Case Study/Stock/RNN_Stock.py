@@ -79,7 +79,7 @@ def gen_Pass(feature_matrix,label_matrix, BATCH_SIZE, num_steps,num_features,num
 	features_matrix_copy = (np.array(feature_matrix,copy = True)[offset:-1,:]).flatten()
 	label_matrix_copy = (np.array(label_matrix,copy = True)[offset+1:,:]).flatten()
 	#print len(features_matrix_copy)
-	num_batch = len(features_matrix_copy)/(num_features * num_steps * BATCH_SIZE)
+	num_batch = int(len(features_matrix_copy)/(num_features * num_steps * BATCH_SIZE))
 	if num_batch <= 0:
 		raise ValueError('num_batch is smaller than or equal 0!')
 	#feature : [num_batch, BATCH_SIZE, num_steps, num_features]
@@ -150,9 +150,9 @@ feature_matrix,label_matrix= gen_Data(BATCH_SIZE,num_features,num_classes)
 """
 Function to train the network
 """
-print "Training Starts..."
-print feature_matrix.shape
-print label_matrix.shape
+print ("Training Starts...")
+print (feature_matrix.shape)
+print (label_matrix.shape)
 with tf.Session() as sess:
 	sess.run(tf.initialize_all_variables())
 	training_losses = []
@@ -172,10 +172,10 @@ with tf.Session() as sess:
 				training_loss += training_loss_
 				training_losses.append(float(training_loss)/BATCH_SIZE)
 				if batch_id % 30 == 0:
-					print "Batch Training Loss: " + str(float(training_loss)/BATCH_SIZE)
-			print "Finish One Pass of Data"
-		print "Epoch Finished...Start Another Epoch"
-	print "Training Finished"
+					print ("Batch Training Loss: " + str(float(training_loss)/BATCH_SIZE))
+			print ("Finish One Pass of Data")
+		print ("Epoch Finished...Start Another Epoch")
+	print ("Training Finished")
 	plt.plot(training_losses)
 	plt.show()
 	
@@ -218,7 +218,7 @@ with tf.Session() as sess:
 	'''
 
 	#Start to do prediction
-	print "\n Validation in place..."
+	print ("\n Validation in place...")
 	feature_matrix_ver,label_matrix_ver= gen_Data(BATCH_SIZE,num_features,num_classes,10000)
 	x_ver = feature_matrix_ver.flatten() #length = 1000 * num_features
 	y_ver = label_matrix_ver.flatten() #length = 1000 * num_classes
@@ -239,12 +239,12 @@ with tf.Session() as sess:
 		for step in range(0,num_steps):
 			y_prediction.append(predictions_[step][row])
 
-	print "Feature_matrix:"
-	print feature_matrix_ver[:20]
-	print "Groundtruth:"
-	print y_.reshape((-1,num_classes)).argmax(axis=1)[1:21]
-	print "Prediction:"
-	print np.array(y_prediction).argmax(axis=1)[:20]
+	print ("Feature_matrix:")
+	print (feature_matrix_ver[:20])
+	print ("Groundtruth:")
+	print (y_.reshape((-1,num_classes)).argmax(axis=1)[1:21])
+	print ("Prediction:")
+	print (np.array(y_prediction).argmax(axis=1)[:20])
 	TOTAL_CORRECT_CASE = int(np.sum(np.array(y_prediction).argmax(axis=1)[:-1] == y_.reshape((-1,num_classes)).argmax(axis=1)[1:]))
 	TOTAL_CASE = len(y_prediction)-1 
-	print "The overall accuracy: %d / %d" %(TOTAL_CORRECT_CASE,TOTAL_CASE) + " ==> " + str(float(TOTAL_CORRECT_CASE)/TOTAL_CASE)	
+	print ("The overall accuracy: %d / %d" %(TOTAL_CORRECT_CASE,TOTAL_CASE) + " ==> " + str(float(TOTAL_CORRECT_CASE)/TOTAL_CASE))	
